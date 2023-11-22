@@ -64,3 +64,79 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## STEPS
+```
+composer require pusher/pusher-php-serve
+```
+
+<a href="https://pusher.com/>pusher.com</a>
+
+```
+MessageNotification.php
+
+php artisan make:event MessageNotification -> class MessageNotification implements ShouldBroadcast
+
+public $message
+
+public function __construct($message)
+{
+    $this->message = $message;
+}
+
+public function broadcastOn(): array
+    {
+        return [
+            new Channel('notification'),
+        ];
+    }
+```
+
+```
+config->app.php
+
+uncomment -> App\Providers\BroadcastServiceProvider::class,
+```
+
+```
+npm install pusher-js laravel-echo --save
+```
+
+```
+web.php
+
+use App\Events\MessageNotification;
+
+Route::get('/event', function () {
+    event(new MessageNotification('This is a notification'));
+});
+
+Route::get('/listen', function () {
+    return view('listen');
+});
+
+```
+
+```
+listen.blade.php
+
+add -> <meta name="csrf-token" content="{{csrf_token()}}">
+
+add -> <script src="{{asset('js/app.js')}}"></script>
+```
+
+'''
+resources->js/app.js
+
+uncomment codes of Echo
+
+and add this ->  encryption: true,
+
+'''
+
+```
+composer require laravel/ui
+php artisan ui bootstrap
+npm install && npm run dev
+```
